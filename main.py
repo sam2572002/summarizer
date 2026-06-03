@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,HTTPException 
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import google.generativeai as genai
@@ -35,7 +35,6 @@ def summarize(input: TextInput):
 
 @app.post("/summarize/bullets")
 def bullets(input: TextInput):
-    # model = genai.GenerativeModel("gemini-2.5-flash")
     prompt = f"Summarize the following text in 3-4 bullets:\n\n{input.text}"
     response = model.generate_content(prompt)
     lines = response.text.split("\n")
@@ -47,11 +46,12 @@ def bullets(input: TextInput):
 
 @app.post("/summarize/sentiment")
 def sentiment(input: TextInput):
-    # model = genai.GenerativeModel("gemini-2.5-flash")
     prompt = f"Analyse the Sentiment of the input text and return response only in json with two fields exactly sentiment and reason:\n\n{input.text}"
     response = model.generate_content(prompt)
     cleaned = response.text.replace("```json", "")
     cleaned = cleaned.replace("```","")
-    result = json.loads(cleaned)
-    print(dir(response))
+    try : 
+        result = json.loads(cleaned)
+    except : 
+        raise HTTPException(status_code=500, detail="Improper Gemini Response")    
     return result
