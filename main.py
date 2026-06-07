@@ -1,6 +1,7 @@
 from fastapi import FastAPI,HTTPException 
 from pydantic import BaseModel
 from dotenv import load_dotenv
+from supabase import create_client
 import google.generativeai as genai
 import os
 import json
@@ -9,6 +10,9 @@ import json
 load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
+url = os.getenv("SUPABASE_URL")
+key = os.getenv("SUPABASE_API_KEY")
+client = create_client(url, key)
 # Create the FastAPI app
 app = FastAPI()
 
@@ -24,12 +28,24 @@ class TextInput(BaseModel):
 def home():
     return {"message": "AI Summarizer API is running"}
 
+@app.get("/history")
+def history():
+     result = client.table("Summarize").select("*").execute()
+     return result.data
+
+@app.delete("/history/{id}")
+def delete_by_id(id):
+     client.table("Summarize").delete().eq("id",id).execute()
+     return {"message": "deleted successfully"}
+
 # Summarize endpoint — this is the main feature
 @app.post("/summarize")
 def summarize(input: TextInput):
     
     prompt = f"Summarize the following text in 3-4 sentences:\n\n{input.text}"
     response = model.generate_content(prompt)
+    result = client.table("Summarize").insert({"query": input.text, "summary": response.text}).execute()
+    print(result)
     return {"summary": response.text}
 
 
