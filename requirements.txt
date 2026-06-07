@@ -27,10 +27,12 @@ httplib2==0.31.2
 httpx==0.28.1
 hyperframe==6.1.0
 idna==3.17
+iniconfig==2.3.0
 jiter==0.15.0
 multidict==6.7.1
 openai==2.38.0
 packaging==26.2
+pluggy==1.6.0
 postgrest==2.31.0
 propcache==0.5.2
 proto-plus==1.28.0
@@ -40,8 +42,10 @@ pyasn1_modules==0.4.2
 pycparser==3.0
 pydantic==2.13.4
 pydantic_core==2.46.4
+Pygments==2.20.0
 PyJWT==2.13.0
 pyparsing==3.3.2
+pytest==9.0.3
 python-dotenv==1.2.2
 realtime==2.31.0
 requests==2.34.2
