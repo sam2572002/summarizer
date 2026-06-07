@@ -8,6 +8,8 @@ import json
 
 # Load your API key from .env file
 load_dotenv()
+print("SUPABASE_URL:", os.getenv("SUPABASE_URL"))
+print("SUPABASE_KEY:", os.getenv("SUPABASE_API_KEY"))
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 url = os.getenv("SUPABASE_URL")
